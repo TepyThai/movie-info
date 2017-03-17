@@ -1,5 +1,6 @@
 *.iml
 .gradle
+gradle.properties
 /local.properties
 /.idea/workspace.xml
 /.idea/libraries
@@ -7,3 +8,7 @@
 /build
 /captures
 .externalNativeBuild
+app/libs/
+app/src/androidTest/java/com/tituy/popularmovie/data/
+app/src/main/res/Activity/
+app/src/main/res/drawable/
