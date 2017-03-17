@@ -1,0 +1,20 @@
+<resources>
+    <string name="app_name">PopularMovies</string>
+    <string name="detail_screen_name">Movie Details</string>
+
+    <string name="error_fetch_data">Error Fetching Data! Please Check Your Connection.</string>
+    <string name="action_top_rated">By Top-Rated</string>
+    <string name="action_popular">By Popular</string>
+    <string name="release_string">Release Date:</string>
+    <string name="rated_string">User Rating:</string>
+    <string name="overview_string">Overview:</string>
+    <string name="empty_favourite">"Favourite List is empty"</string>
+    <string name="removed_favourite">"Movie is removed from Favourite Section"</string>
+    <string name="review_title">"Reviews"</string>
+    <string name="review_author">"Author: "</string>
+    <string name="review_content">"Review: \n "</string>
+    <string name="insert_throw">"Failed to insert row into "</string>
+    <string name="unknown_uri">"Unknown uri: "</string>
+    <string name="read_reviews">"Read Review"</string>
+    <string name="no_app_found">"No Youtube App or Web app Found!"</string>
+</resources>
