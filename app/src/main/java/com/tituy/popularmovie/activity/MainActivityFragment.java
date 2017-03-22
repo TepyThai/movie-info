@@ -9,6 +9,7 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.CursorLoader;
 import android.support.v4.content.Loader;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -58,6 +59,7 @@ public class MainActivityFragment extends Fragment implements LoaderManager.Load
     private ProgressBar mProgressBar;
     RecyclerView mRecyclerView;
     RecyclerView.LayoutManager mLayoutManager;
+    SwipeRefreshLayout mSwipeRefreshLayout;
 
     public MainActivityFragment() {
     }
@@ -96,7 +98,8 @@ public class MainActivityFragment extends Fragment implements LoaderManager.Load
 
         View rootView = inflater.inflate(R.layout.fragment_activity_main, container, false);
 
-        mRecyclerView = (RecyclerView) rootView.findViewById(R.id.recycler_view);
+        mSwipeRefreshLayout = (SwipeRefreshLayout)rootView.findViewById(R.id.swipeRefresh);
+        mRecyclerView = (RecyclerView) rootView.findViewById(R.id.recyclerView);
         mProgressBar = (ProgressBar) rootView.findViewById(R.id.progress_bar);
         mMovieArrayList = new ArrayList<>();
 
@@ -107,6 +110,7 @@ public class MainActivityFragment extends Fragment implements LoaderManager.Load
         mLayoutManager = new GridLayoutManager(getContext(), GRID_COLUMN);
         mRecyclerView.setLayoutManager(mLayoutManager);
         mRecyclerView.setAdapter(mMovieCursorAdapter);
+
 
         return rootView;
     }
