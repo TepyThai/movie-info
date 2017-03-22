@@ -17,4 +17,8 @@
     <string name="unknown_uri">"Unknown uri: "</string>
     <string name="read_reviews">"Read Review"</string>
     <string name="no_app_found">"No Youtube App or Web app Found!"</string>
+    <string name="search_activity">Search</string>
+    <string name="search_menu_title">Search</string>
+    <string name="action_favourite">By Favourite</string>
+    <string name="search_menu">Search</string>
 </resources>
