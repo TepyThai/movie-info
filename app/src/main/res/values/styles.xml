@@ -11,9 +11,7 @@
         <item name="colorAccent">@color/colorAccent</item>
         <item name="windowActionBar">false</item>
         <item name="android:windowNoTitle">true</item>
-        <!--
-            <item name="android:windowBackground">@color/colorBackground</item>
-        -->
+        <item name="android:windowBackground">@color/colorPrimaryDark</item>
     </style>
 
     <style name="Theme.PopularMovie" parent="Theme.Base"/>
@@ -21,15 +19,17 @@
     <style name="ActionBarThemeOverlay.NoBackground" parent="">
         <item name="android:textColorPrimary">@color/colorPrimaryText</item>
         <item name="android:actionMenuTextColor">@color/colorPrimaryText</item>
+        <item name="android:windowBackground">@color/colorPrimaryDark</item>
     </style>
 
     <style name="ActionBarThemeOverlay.WithBackground" parent="ActionBarThemeOverlay.NoBackground">
         <item name="android:background">@color/colorPrimary</item>
+        <item name="android:windowBackground">@color/colorPrimaryDark</item>
     </style>
 
     <style name="ActionBar.TitleText" parent="TextAppearance.AppCompat.Widget.ActionBar.Title">
         <item name="android:textColor">@color/colorPrimaryText</item>
-        <item name="android:textSize">18sp</item>
+        <item name="android:textSize">16sp</item>
     </style>
 
 </resources>

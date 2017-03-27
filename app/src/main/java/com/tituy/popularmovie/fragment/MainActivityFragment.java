@@ -1,4 +1,4 @@
-package com.tituy.popularmovie.activity;
+package com.tituy.popularmovie.fragment;
 
 import android.content.ContentValues;
 import android.database.Cursor;
@@ -23,6 +23,7 @@ import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import com.tituy.popularmovie.BuildConfig;
+import com.tituy.popularmovie.activity.MainActivity;
 import com.tituy.popularmovie.adapter.MovieCursorAdapter;
 import com.tituy.popularmovie.database.MovieContract;
 import com.tituy.popularmovie.model.Movie;
@@ -204,7 +205,7 @@ public class MainActivityFragment extends Fragment implements LoaderManager.Load
             contentValues.put(MovieContract.MovieEntry.COLUMN_IS_FAVORITE, isFavouriteFlag);
             contentValues.put(MovieContract.MovieEntry.COLUMN_IS_POPULAR, popularFlag);
             contentValues.put(MovieContract.MovieEntry.COLUMN_IS_TOP_RATED, topRatedFlag);
-
+            contentValues.put(MovieContract.MovieEntry.COLUMN_BACKDROP_IMAGE_URL, movieArrayList.get(i).getBackdropPath());
             values[i] = contentValues;
         }
         getContext().getContentResolver().bulkInsert(MovieContract.MovieEntry.CONTENT_URI, values);

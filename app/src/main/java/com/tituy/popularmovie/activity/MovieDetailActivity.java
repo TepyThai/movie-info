@@ -11,6 +11,7 @@ import android.widget.Toast;
 
 import com.tituy.popularmovie.R;
 import com.tituy.popularmovie.adapter.TrailerAdapter;
+import com.tituy.popularmovie.fragment.MovieDetailFragment;
 
 /**
  * Created by txb on 2016/10/18.
@@ -28,8 +29,8 @@ public class MovieDetailActivity extends BaseActivity implements TrailerAdapter.
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_movie_detail);
 
-//        mCollapsingToolbarLayout.setTitle("dfadfdsf");
-        getCollapsingToolbar();
+        getToolbar();
+        //getDrawerBuilder(this);
 
         movieIntent = getIntent();
         mItemId = movieIntent.getIntExtra(MainActivity.MOVIE_INTENT_STRING, 0);
@@ -45,10 +46,9 @@ public class MovieDetailActivity extends BaseActivity implements TrailerAdapter.
     protected void onResume() {
         super.onResume();
         if(getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE) {
-            int intentResultString = Activity.RESULT_OK;
             Intent getIntent = new Intent();
             getIntent.putExtra(MainActivity.MOVIE_INTENT_STRING, mItemId);
-            setResult(intentResultString, getIntent);
+            setResult(Activity.RESULT_OK, getIntent);
             finish();
         }
     }
@@ -74,28 +74,4 @@ public class MovieDetailActivity extends BaseActivity implements TrailerAdapter.
             }
         }
     }
-//
-//    @Override
-//    public boolean onOptionsItemSelected(MenuItem item) {
-//        switch (item.getItemId()) {
-//            // Respond to the action bar's Up/Home button
-//            case android.R.id.home:
-//                Intent upIntent = NavUtils.getParentActivityIntent(this);
-//                if (NavUtils.shouldUpRecreateTask(this, upIntent)) {
-//                    // This activity is NOT part of this app's task, so create a new task
-//                    // when navigating up, with a synthesized back stack.
-//                    TaskStackBuilder.create(this)
-//                            // Add all of this activity's parents to the back stack
-//                            .addNextIntentWithParentStack(upIntent)
-//                            // Navigate up to the closest parent
-//                            .startActivities();
-//                } else {
-//                    // This activity is part of this app's task, so simply
-//                    // navigate up to the logical parent activity.
-//                    NavUtils.navigateUpTo(this, upIntent);
-//                }
-//                return true;
-//        }
-//        return super.onOptionsItemSelected(item);
-//    }
 }

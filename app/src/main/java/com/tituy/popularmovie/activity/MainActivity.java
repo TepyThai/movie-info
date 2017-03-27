@@ -8,6 +8,7 @@ import android.os.Bundle;
 import com.tituy.popularmovie.R;
 import com.tituy.popularmovie.adapter.MovieCursorAdapter;
 import com.tituy.popularmovie.adapter.TrailerAdapter;
+import com.tituy.popularmovie.fragment.MovieDetailFragment;
 
 public class MainActivity extends BaseActivity implements MovieCursorAdapter.OnItemClickCallBack, TrailerAdapter.trailerClickHandler{
 
@@ -25,7 +26,7 @@ public class MainActivity extends BaseActivity implements MovieCursorAdapter.OnI
         setContentView(R.layout.activity_main);
         //getToolbar();
         getToolbar(getResources().getString(R.string.app_name));
-
+        //getDrawerBuilder(this);
         if(findViewById(R.id.movie_detail_container) != null){
 
             //in Dual screens mode

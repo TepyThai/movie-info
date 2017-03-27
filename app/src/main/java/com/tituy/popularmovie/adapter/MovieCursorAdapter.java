@@ -54,7 +54,11 @@ public class MovieCursorAdapter extends CursorRecyclerViewAdapter<MovieCursorAda
         }
 
         public void setData(Cursor cursor){
-            Picasso.with(mContext).load(cursor.getString(cursor.getColumnIndex(MovieEntry.COLUMN_IMAGE_URL))).into(movieImage);
+            Picasso.with(mContext)
+                    .load(cursor.getString(cursor.getColumnIndex(MovieEntry.COLUMN_IMAGE_URL)))
+                    .placeholder(R.drawable.ic_movie_black_24dp)
+                    .error(R.drawable.ic_error_black_24dp)
+                    .into(movieImage);
             movieTitle.setText(cursor.getString(cursor.getColumnIndex(MovieEntry.COLUMN_TITLE)));
         }
     }

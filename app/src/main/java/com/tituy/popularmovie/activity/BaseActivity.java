@@ -1,6 +1,5 @@
 package com.tituy.popularmovie.activity;
 
-import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 
@@ -12,31 +11,27 @@ import com.tituy.popularmovie.R;
 
 public class BaseActivity extends AppCompatActivity {
 
-    private Toolbar mToolbar;
     private Toolbar mCollapsedToolbar;
+//    private Drawer mDrawerBuilder;
 
     protected Toolbar getToolbar(String title) {
-        if (mToolbar == null) {
-            mToolbar = (Toolbar) findViewById(R.id.toolbar);
-            if (mToolbar != null) {
-                setSupportActionBar(mToolbar);
-                mToolbar.setTitle(title);
-            }
-        }
-        return mToolbar;
+        getToolbar().setTitle(title);
+        return getToolbar();
     }
 
-    protected Toolbar getCollapsingToolbar() {
+    protected Toolbar getToolbar() {
 
         if(mCollapsedToolbar == null){
-            mCollapsedToolbar = (Toolbar)findViewById(R.id.collapsed_toolbar);
+            mCollapsedToolbar = (Toolbar)findViewById(R.id.toolbar);
             if(mCollapsedToolbar != null){
                 setSupportActionBar(mCollapsedToolbar);
-                ActionBar actionBar = getSupportActionBar();
-                actionBar.setDisplayHomeAsUpEnabled(true);
-                actionBar.setTitle("dfadf");
             }
         }
         return mCollapsedToolbar;
     }
+
+//    protected Drawer getDrawerBuilder(AppCompatActivity appCompatActivity){
+//        mDrawerBuilder = new DrawerBuilder().withActivity(appCompatActivity).build();
+//        return mDrawerBuilder;
+//    }
 }
