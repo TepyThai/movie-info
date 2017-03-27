@@ -42,4 +42,7 @@ dependencies {
     debugCompile 'com.amitshekhar.android:debug-db:0.4.0'
     compile 'com.android.support:design:25.3.0'
     compile 'me.henrytao:smooth-app-bar-layout:24.1.0.0'
+    compile('com.mikepenz:materialdrawer:5.8.2@aar') {
+        transitive = true
+    }
 }
