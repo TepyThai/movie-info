@@ -2,16 +2,28 @@
     <!-- Default screen margins, per the Android Design guidelines. -->
     <dimen name="activity_horizontal_margin">16dp</dimen>
     <dimen name="activity_vertical_margin">16dp</dimen>
-    <dimen name="detail_backdrop_height">250dp</dimen>
-    <dimen name="detail_backdrop_width">185dp</dimen>
+
+    <dimen name="detail_image_width">185dp</dimen>
+    <dimen name="detail_image_height">250dp</dimen>
+
+    <dimen name="app_bar_height">256dp</dimen>
     <dimen name="card_margin">5dp</dimen>
-    <dimen name="movie_thumbnail_height">185dp</dimen>
-    <dimen name="card_movie_radius">0dp</dimen>
+
+    <dimen name="card_movie_radius">2dp</dimen>
     <dimen name="movie_title_padding">10dp</dimen>
     <dimen name="movie_title">15dp</dimen>
-    <dimen name="detail_title">32sp</dimen>
-    <dimen name="elevation">3dp</dimen>
+
+    <dimen name="elevation">2dp</dimen>
     <dimen name="space_height">16dp</dimen>
+
+    <dimen name="backdrop_width">320dp</dimen>
+    <dimen name="backdrop_height">480dp</dimen>
+
     <dimen name="date_text_size">24sp</dimen>
     <dimen name="default_text_size">16sp</dimen>
+    <dimen name="detail_title_size">32sp</dimen>
+    <dimen name="space_size_padding">8dp</dimen>
+    <dimen name="trailer_width">185dp</dimen>
+    <dimen name="trailer_height">185dp</dimen>
+
 </resources>

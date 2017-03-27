@@ -9,7 +9,7 @@
 
     <fragment
         android:id="@+id/fragment"
-        android:name="com.tituy.popularmovie.activity.MainActivityFragment"
+        android:name="com.tituy.popularmovie.fragment.MainActivityFragment"
         tools:layout="@layout/fragment_activity_main"
         android:layout_width="0dp"
         android:layout_weight="1"

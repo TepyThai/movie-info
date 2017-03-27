@@ -1,4 +1,4 @@
-package com.tituy.popularmovie.activity;
+package com.tituy.popularmovie.fragment;
 
 import android.content.ContentValues;
 import android.database.Cursor;
@@ -9,6 +9,7 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.CursorLoader;
 import android.support.v4.content.Loader;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -22,6 +23,7 @@ import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import com.tituy.popularmovie.BuildConfig;
+import com.tituy.popularmovie.activity.MainActivity;
 import com.tituy.popularmovie.adapter.MovieCursorAdapter;
 import com.tituy.popularmovie.database.MovieContract;
 import com.tituy.popularmovie.model.Movie;
@@ -58,6 +60,7 @@ public class MainActivityFragment extends Fragment implements LoaderManager.Load
     private ProgressBar mProgressBar;
     RecyclerView mRecyclerView;
     RecyclerView.LayoutManager mLayoutManager;
+    SwipeRefreshLayout mSwipeRefreshLayout;
 
     public MainActivityFragment() {
     }
@@ -96,7 +99,8 @@ public class MainActivityFragment extends Fragment implements LoaderManager.Load
 
         View rootView = inflater.inflate(R.layout.fragment_activity_main, container, false);
 
-        mRecyclerView = (RecyclerView) rootView.findViewById(R.id.recycler_view);
+        mSwipeRefreshLayout = (SwipeRefreshLayout)rootView.findViewById(R.id.swipeRefresh);
+        mRecyclerView = (RecyclerView) rootView.findViewById(R.id.recyclerView);
         mProgressBar = (ProgressBar) rootView.findViewById(R.id.progress_bar);
         mMovieArrayList = new ArrayList<>();
 
@@ -107,6 +111,7 @@ public class MainActivityFragment extends Fragment implements LoaderManager.Load
         mLayoutManager = new GridLayoutManager(getContext(), GRID_COLUMN);
         mRecyclerView.setLayoutManager(mLayoutManager);
         mRecyclerView.setAdapter(mMovieCursorAdapter);
+
 
         return rootView;
     }
@@ -200,7 +205,7 @@ public class MainActivityFragment extends Fragment implements LoaderManager.Load
             contentValues.put(MovieContract.MovieEntry.COLUMN_IS_FAVORITE, isFavouriteFlag);
             contentValues.put(MovieContract.MovieEntry.COLUMN_IS_POPULAR, popularFlag);
             contentValues.put(MovieContract.MovieEntry.COLUMN_IS_TOP_RATED, topRatedFlag);
-
+            contentValues.put(MovieContract.MovieEntry.COLUMN_BACKDROP_IMAGE_URL, movieArrayList.get(i).getBackdropPath());
             values[i] = contentValues;
         }
         getContext().getContentResolver().bulkInsert(MovieContract.MovieEntry.CONTENT_URI, values);

@@ -12,3 +12,5 @@ app/libs/
 app/src/androidTest/java/com/tituy/popularmovie/data/
 app/src/main/res/Activity/
 app/src/main/res/drawable/
+.idea/markdown-navigator.xml
+.idea/markdown-navigator/

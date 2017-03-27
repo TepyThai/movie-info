@@ -15,7 +15,7 @@ import com.tituy.popularmovie.database.MovieContract.VideoEntry;
 public class MovieDbHelper extends SQLiteOpenHelper {
 
     //Databse Version (must be incremented when there is changes in db Schema)
-    private static final int DATABASE_VERSION = 3;
+    private static final int DATABASE_VERSION = 4;
 
     static final String DATABASE_NAME = "movie.db";
 
@@ -38,7 +38,8 @@ public class MovieDbHelper extends SQLiteOpenHelper {
                 MovieEntry.COLUMN_MOVIE_ID + " INTEGER NOT NULL, " +
                 MovieEntry.COLUMN_IS_FAVORITE + " INTEGER NOT NULL, " +
                 MovieEntry.COLUMN_IS_POPULAR + " INTEGER NOT NULL, " +
-                MovieEntry.COLUMN_IS_TOP_RATED + " INTEGER NOT NULL " +");";
+                MovieEntry.COLUMN_IS_TOP_RATED + " INTEGER NOT NULL, " +
+                MovieEntry.COLUMN_BACKDROP_IMAGE_URL + " TEXT NOT NULL " +");";
 
         //create Review Table
         final String SQL_CREATE_REVIEW_TABLE = "CREATE TABLE " + ReviewEntry.TABLE_NAME + " (" +

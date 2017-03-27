@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-              xmlns:card_view="http://schemas.android.com/apk/res-auto"
-
+              xmlns:app="http://schemas.android.com/apk/res-auto"
               android:layout_width="match_parent"
               android:layout_height="wrap_content">
     <android.support.v7.widget.CardView
@@ -10,8 +9,8 @@
         android:layout_height="match_parent"
         android:layout_gravity="center"
         android:layout_margin="@dimen/card_margin"
-        android:elevation="3dp"
-        card_view:cardCornerRadius="@dimen/card_movie_radius">
+        app:cardElevation="6dp"
+        app:cardCornerRadius="@dimen/card_movie_radius">
 
         <RelativeLayout
             android:layout_width="match_parent"
@@ -21,6 +20,7 @@
                 android:id="@+id/movie_image"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:contentDescription="@string/movie_trailer_content_description"
                 android:background="?attr/selectableItemBackgroundBorderless"
                 android:clickable="true"
                 android:scaleType="centerCrop"
@@ -32,15 +32,10 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_below="@+id/movie_image"
-                android:paddingLeft="@dimen/movie_title_padding"
-                android:paddingRight="@dimen/movie_title_padding"
-                android:paddingTop="@dimen/movie_title_padding"
-                android:paddingBottom="@dimen/movie_title_padding"
+                android:padding="@dimen/movie_title_padding"
                 android:textColor="@color/colorPrimaryDark"
-                android:textSize="@dimen/movie_title"/>
+                android:textSize="15sp"/>
 
         </RelativeLayout>
-
     </android.support.v7.widget.CardView>
-
 </LinearLayout>

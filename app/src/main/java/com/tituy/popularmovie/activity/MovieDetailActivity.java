@@ -7,27 +7,30 @@ import android.content.res.Configuration;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.support.v7.app.AppCompatActivity;
 import android.widget.Toast;
 
-import com.tituy.popularmovie.adapter.TrailerAdapter;
 import com.tituy.popularmovie.R;
+import com.tituy.popularmovie.adapter.TrailerAdapter;
+import com.tituy.popularmovie.fragment.MovieDetailFragment;
 
 /**
  * Created by txb on 2016/10/18.
  */
 
-public class MovieDetailActivity extends AppCompatActivity implements TrailerAdapter.trailerClickHandler{
+public class MovieDetailActivity extends BaseActivity implements TrailerAdapter.trailerClickHandler{
 
     private static final String YOUTUBE_WEB_INTENT = "http://www.youtube.com/watch?v=";
     private static final String YOUTUBE_APP_INTENT = "vnd.youtube:";
     private int mItemId;
-    private Intent movieIntent;
+    Intent movieIntent;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_movie_detail);
+
+        getToolbar();
+        //getDrawerBuilder(this);
 
         movieIntent = getIntent();
         mItemId = movieIntent.getIntExtra(MainActivity.MOVIE_INTENT_STRING, 0);
@@ -43,10 +46,9 @@ public class MovieDetailActivity extends AppCompatActivity implements TrailerAda
     protected void onResume() {
         super.onResume();
         if(getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE) {
-            int intentResultString = Activity.RESULT_OK;
             Intent getIntent = new Intent();
             getIntent.putExtra(MainActivity.MOVIE_INTENT_STRING, mItemId);
-            setResult(intentResultString, getIntent);
+            setResult(Activity.RESULT_OK, getIntent);
             finish();
         }
     }

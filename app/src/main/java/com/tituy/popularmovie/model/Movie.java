@@ -57,7 +57,8 @@ public class Movie implements Parcelable{
     @SerializedName("video")
     private Boolean video;
 
-    final String basePosterUrl = "http://image.tmdb.org/t/p/w185";
+    private final String basePosterUrl = "http://image.tmdb.org/t/p/w342";
+    private final String basePosterBackdropUrl = "http://image.tmdb.org/t/p/w780";
 
     public Movie(String title, String imageUrl, String overview, String date, Double voteAverage) {
         this.title = title;
@@ -168,7 +169,7 @@ public class Movie implements Parcelable{
     }
 
     public String getBackdropPath() {
-        return backdropPath;
+        return basePosterBackdropUrl+backdropPath;
     }
 
     public void setBackdropPath(String backdropPath) {

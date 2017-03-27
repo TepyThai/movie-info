@@ -1,11 +1,35 @@
-<resources>
+<resources xmlns:tools="http://schemas.android.com/tools">
 
     <!-- Base application theme. -->
-    <style name="AppTheme" parent="Theme.AppCompat.Light.DarkActionBar">
+    <style name="AppTheme" parent="Theme.AppCompat.Light.NoActionBar">
+    </style>
+
+    <style name="Theme.Base" parent="AppTheme">
         <!-- Customize your theme here. -->
         <item name="colorPrimary">@color/colorPrimary</item>
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
         <item name="colorAccent">@color/colorAccent</item>
+        <item name="windowActionBar">false</item>
+        <item name="android:windowNoTitle">true</item>
+        <item name="android:windowBackground">@color/colorPrimaryDark</item>
+    </style>
+
+    <style name="Theme.PopularMovie" parent="Theme.Base"/>
+
+    <style name="ActionBarThemeOverlay.NoBackground" parent="">
+        <item name="android:textColorPrimary">@color/colorPrimaryText</item>
+        <item name="android:actionMenuTextColor">@color/colorPrimaryText</item>
+        <item name="android:windowBackground">@color/colorPrimaryDark</item>
+    </style>
+
+    <style name="ActionBarThemeOverlay.WithBackground" parent="ActionBarThemeOverlay.NoBackground">
+        <item name="android:background">@color/colorPrimary</item>
+        <item name="android:windowBackground">@color/colorPrimaryDark</item>
+    </style>
+
+    <style name="ActionBar.TitleText" parent="TextAppearance.AppCompat.Widget.ActionBar.Title">
+        <item name="android:textColor">@color/colorPrimaryText</item>
+        <item name="android:textSize">16sp</item>
     </style>
 
 </resources>

@@ -20,7 +20,7 @@ public class TrailerAdapter extends CursorRecyclerViewAdapter<TrailerAdapter.Tra
 
     private Context mContext;
     private static final String YOUTUBE_THUMBNAIL_PREFIX = "http://img.youtube.com/vi/";
-    private static final String YOUTUBE_THUMBNAIL_SUFFIX = "/mqdefault.jpg";
+    private static final String YOUTUBE_THUMBNAIL_SUFFIX = "/hqdefault.jpg";
 
     private String trailerID;
 
@@ -46,7 +46,11 @@ public class TrailerAdapter extends CursorRecyclerViewAdapter<TrailerAdapter.Tra
             trailerID = cursor.getString(cursor.getColumnIndex(MovieContract.VideoEntry.COLUMN_VIDEO_KEY));
             Picasso.with(mContext).load(YOUTUBE_THUMBNAIL_PREFIX +
                     trailerID +
-                    YOUTUBE_THUMBNAIL_SUFFIX).into(trailerThumbnail);
+                    YOUTUBE_THUMBNAIL_SUFFIX)
+                    .resizeDimen(R.dimen.trailer_width, R.dimen.trailer_height)
+                    .placeholder(R.drawable.ic_movie_black_24dp)
+                    .error(R.drawable.ic_error_black_24dp)
+                    .into(trailerThumbnail);
         }
 
         @Override

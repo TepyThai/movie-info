@@ -10,11 +10,20 @@
     <string name="overview_string">Overview:</string>
     <string name="empty_favourite">"Favourite List is empty"</string>
     <string name="removed_favourite">"Movie is removed from Favourite Section"</string>
-    <string name="review_title">"Reviews"</string>
+    <string name="review_title">"Review"</string>
+    <string name="no_review_text">"No Review"</string>
     <string name="review_author">"Author: "</string>
     <string name="review_content">"Review: \n "</string>
     <string name="insert_throw">"Failed to insert row into "</string>
     <string name="unknown_uri">"Unknown uri: "</string>
-    <string name="read_reviews">"Read Review"</string>
     <string name="no_app_found">"No Youtube App or Web app Found!"</string>
+    <string name="search_activity">Search</string>
+    <string name="action_favourite">By Favourite</string>
+    <string name="search_menu">Search</string>
+    <string name="image_detail_description">image_detail_description</string>
+    <string name="trailer_text">Trailer</string>
+    <string name="movie_trailer_content_description">Movie Trailer Content Description</string>
+    <string name="author_text">Author:</string>
+    <string name="rating_text">Rating:</string>
+    <string name="added_favourite">Movie added to favourite section</string>
 </resources>

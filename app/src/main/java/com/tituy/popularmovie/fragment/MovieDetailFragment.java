@@ -1,4 +1,4 @@
-package com.tituy.popularmovie.activity;
+package com.tituy.popularmovie.fragment;
 
 import android.content.AsyncQueryHandler;
 import android.content.ContentResolver;
@@ -7,12 +7,15 @@ import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.design.widget.CollapsingToolbarLayout;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.CursorLoader;
 import android.support.v4.content.Loader;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -22,12 +25,15 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.github.ivbaranov.mfb.MaterialFavoriteButton;
 import com.squareup.picasso.Picasso;
 import com.tituy.popularmovie.BuildConfig;
 import com.tituy.popularmovie.R;
+import com.tituy.popularmovie.activity.MovieDetailActivity;
+import com.tituy.popularmovie.adapter.ReviewCursorAdapter;
 import com.tituy.popularmovie.adapter.TrailerAdapter;
 import com.tituy.popularmovie.database.MovieContract;
+import com.tituy.popularmovie.model.MovieReview;
+import com.tituy.popularmovie.model.MovieReviewResponse;
 import com.tituy.popularmovie.model.MovieVideo;
 import com.tituy.popularmovie.model.MovieVideoResponse;
 import com.tituy.popularmovie.rest.TmdbApiClient;
@@ -38,7 +44,6 @@ import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
-import butterknife.OnClick;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -53,18 +58,22 @@ public class MovieDetailFragment extends Fragment implements LoaderManager.Loade
     private static final String ARGS_MOVIE_ID = "args_movie_id";
     private static final String API_KEY = BuildConfig.TMDB_API_KEY;
     private static final int VIDEO_TRAILER_LOADER = 0;
-    private static final String REVIEW_DIALOG_TAG = "review_dialog_tag";
+    private static final int REVIEW_LOADER = 1;
 
+    LinearLayoutManager mLinearLayoutManager;
+    private String flag;
+    LinearLayoutManager mLayoutManager;
+
+    private List<MovieReview> mMovieReviews;
+    private ReviewCursorAdapter mReviewCursorAdapter;
     private Cursor mCursor;
     private int mMovieId;
     private TrailerAdapter trailerAdapter;
     private List<MovieVideo> mMovieVideos;
-    private String flag;
-    private LinearLayoutManager mLayoutManager;
     private DetailQueryHandler detailQueryHandler;
 
-    @BindView(R.id.original_title)
-    TextView originalTitle;
+    @BindView(R.id.backdrop_image)
+    ImageView mBackdropImage;
     @BindView(R.id.overview_text)
     TextView overViewText;
     @BindView(R.id.overview)
@@ -79,8 +88,16 @@ public class MovieDetailFragment extends Fragment implements LoaderManager.Loade
     LinearLayout mLinearLayout;
     @BindView(R.id.detail_horizon_recycler)
     RecyclerView mTrailerRecyclerView;
-    @BindView(R.id.favourite_toggle_button)
-    MaterialFavoriteButton favouriteButton;
+    @BindView(R.id.review_dialog_recycler_view)
+    RecyclerView mReviewRecyclerView;
+    @BindView(R.id.favourite_fb_icon)
+    FloatingActionButton favourite_fb_icon;
+    @BindView(R.id.collapsing_toolbar_container)
+    CollapsingToolbarLayout mCollapsingToolbarLayout;
+    @BindView(R.id.toolbar)
+    Toolbar mToolbar;
+    @BindView(R.id.review_content_text)
+    TextView reviewText;
 
     public MovieDetailFragment() {
     }
@@ -96,6 +113,16 @@ public class MovieDetailFragment extends Fragment implements LoaderManager.Loade
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
 
+        getTrailerCursor();
+        getReviewCursor();
+
+        getLoaderManager().initLoader(VIDEO_TRAILER_LOADER, null, this);
+        getLoaderManager().initLoader(REVIEW_LOADER, null, this);
+
+        super.onActivityCreated(savedInstanceState);
+    }
+
+    private void getTrailerCursor(){
         Cursor c = getActivity().getContentResolver().query(MovieContract.VideoEntry.buildVideoByIDUri(mMovieId), null, null, null, null);
         if (c == null || c.getCount() <= 0) {
             try {
@@ -103,9 +130,37 @@ public class MovieDetailFragment extends Fragment implements LoaderManager.Loade
             } catch (NullPointerException e) {
                 Log.v(TAG, e.toString());
             }
+        }else {
+            c.close();
         }
-        getLoaderManager().initLoader(VIDEO_TRAILER_LOADER, null, this);
-        super.onActivityCreated(savedInstanceState);
+    }
+
+    private void checkReviewNotEmpty(){
+        Cursor c = getActivity().getContentResolver().query(MovieContract.ReviewEntry.buildReviewUri(mMovieId), null, null, null, null);
+        if((c == null || c.getCount() < 0)){
+            reviewText.setText(R.string.no_review_text);
+        }else {
+            reviewText.setText(R.string.review_title);
+            c.close();
+        }
+    }
+
+    private void getReviewCursor(){
+        Cursor c = getContext().getContentResolver().query(MovieContract.ReviewEntry.buildReviewByIDUri(mMovieId)
+                , null
+                , null
+                , null
+                , null);
+        if(c == null || c.getCount() == 0){
+            try {
+                updateReviews(Integer.toString(mMovieId));
+            }catch (NullPointerException e){
+                Log.v(TAG, e.toString());
+            }
+        }else {
+            c.close();
+            Log.v(TAG, MovieContract.ReviewEntry.buildReviewByIDUri(mMovieId).toString());
+        }
     }
 
     @Nullable
@@ -116,15 +171,28 @@ public class MovieDetailFragment extends Fragment implements LoaderManager.Loade
         View rootView = inflater.inflate(R.layout.fragment_movie_detail, container, false);
         ButterKnife.bind(this, rootView);
 
-        favouriteButton.setOnFavoriteAnimationEndListener(new MaterialFavoriteButton.OnFavoriteAnimationEndListener() {
+        favourite_fb_icon.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onAnimationEnd(MaterialFavoriteButton buttonView, boolean favorite) {
-
-                if (favorite) {
+            public void onClick(View v) {
+                if(flag.equals("0")){
                     toggleFavouriteHandler(1);
-                } else {
+                    favourite_fb_icon.setImageResource(R.drawable.ic_favorite_white_24dp);
+                    Toast.makeText(getContext(), R.string.added_favourite, Toast.LENGTH_SHORT).show();
+                    flag = "1";
+                }else {
                     toggleFavouriteHandler(0);
+                    favourite_fb_icon.setImageResource(R.drawable.ic_favorite_border_white_24dp);
                     Toast.makeText(getContext(), R.string.removed_favourite, Toast.LENGTH_SHORT).show();
+                    flag = "0";
+                }
+            }
+        });
+
+        mToolbar.setNavigationOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if(getActivity() instanceof MovieDetailActivity){
+                    getActivity().onBackPressed();
                 }
             }
         });
@@ -133,6 +201,12 @@ public class MovieDetailFragment extends Fragment implements LoaderManager.Loade
         mLayoutManager = new LinearLayoutManager(getContext(), LinearLayoutManager.HORIZONTAL, false);
         mTrailerRecyclerView.setLayoutManager(mLayoutManager);
         mTrailerRecyclerView.setAdapter(trailerAdapter);
+
+        mReviewCursorAdapter = new ReviewCursorAdapter(getContext(), null);
+        mLinearLayoutManager = new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL, false);
+
+        mReviewRecyclerView.setLayoutManager(mLinearLayoutManager);
+        mReviewRecyclerView.setAdapter(mReviewCursorAdapter);
 
         return rootView;
     }
@@ -160,24 +234,43 @@ public class MovieDetailFragment extends Fragment implements LoaderManager.Loade
     @Override
     public void onResume() {
         super.onResume();
+
         getLoaderManager().restartLoader(VIDEO_TRAILER_LOADER, null, this);
+        getLoaderManager().restartLoader(REVIEW_LOADER, null, this);
+
         detailQueryHandler.startQuery(1, null, MovieContract.MovieEntry.buildMovieByIDUri(mMovieId), null, null, null, null);
     }
 
     private void bindMovieDetail() {
         if (mCursor != null && mCursor.moveToFirst()) {
             try {
+                checkReviewNotEmpty();
                 flag = mCursor.getString(mCursor.getColumnIndex(MovieContract.MovieEntry.COLUMN_IS_FAVORITE));
-                originalTitle.setText(mCursor.getString(mCursor.getColumnIndex(MovieContract.MovieEntry.COLUMN_TITLE)));
-                overView.setText(mCursor.getString(mCursor.getColumnIndex(MovieContract.MovieEntry.COLUMN_OVERVIEW)));
-                userRated.setText(getString(R.string.rated_string) + " " + mCursor.getString(mCursor.getColumnIndex(MovieContract.MovieEntry.COLUMN_VOTE_AVERAGE)));
-                releasedDate.setText(getString(R.string.release_string) + " " + mCursor.getString(mCursor.getColumnIndex(MovieContract.MovieEntry.COLUMN_DATE)));
-                Picasso.with(getContext()).load(mCursor.getString(mCursor.getColumnIndex(MovieContract.MovieEntry.COLUMN_IMAGE_URL))).resizeDimen(R.dimen.detail_backdrop_width, R.dimen.detail_backdrop_height).centerCrop().into(imageThumbnail);
 
-                if (flag.equals("1")) {
-                    favouriteButton.setFavorite(true);
-                    Log.v(TAG, flag + " is 1!!!!!");
+                if(flag.equals("1")){
+                    favourite_fb_icon.setImageResource(R.drawable.ic_favorite_white_24dp);
+                }else {
+                    favourite_fb_icon.setImageResource(R.drawable.ic_favorite_border_white_24dp);
                 }
+
+                String originalTitleText = mCursor.getString(mCursor.getColumnIndex(MovieContract.MovieEntry.COLUMN_TITLE));
+                mCollapsingToolbarLayout.setTitle(originalTitleText);
+                //originalTitle.setText(originalTitleText);
+                overView.setText(mCursor.getString(mCursor.getColumnIndex(MovieContract.MovieEntry.COLUMN_OVERVIEW)));
+                userRated.setText(mCursor.getString(mCursor.getColumnIndex(MovieContract.MovieEntry.COLUMN_VOTE_AVERAGE)));
+                releasedDate.setText(mCursor.getString(mCursor.getColumnIndex(MovieContract.MovieEntry.COLUMN_DATE)));
+                Picasso.with(getContext())
+                        .load(mCursor.getString(mCursor.getColumnIndex(MovieContract.MovieEntry.COLUMN_IMAGE_URL)))
+                        .resizeDimen(R.dimen.detail_image_width, R.dimen.detail_image_height)
+                        .placeholder(R.drawable.ic_movie_black_24dp)
+                        .error(R.drawable.ic_error_black_24dp)
+                        .into(imageThumbnail);
+                Picasso.with(getContext())
+                        .load(mCursor.getString(mCursor.getColumnIndex(MovieContract.MovieEntry.COLUMN_BACKDROP_IMAGE_URL)))
+                        .placeholder(R.drawable.ic_movie_black_24dp)
+                        .error(R.drawable.ic_error_black_24dp)
+                        .fit()
+                        .into(mBackdropImage);
             } catch (NullPointerException e) {
                 Toast.makeText(getContext(), e.toString() + " bind not working", Toast.LENGTH_SHORT).show();
                 Log.v(TAG, e.toString());
@@ -185,25 +278,40 @@ public class MovieDetailFragment extends Fragment implements LoaderManager.Loade
         } else {
             Toast.makeText(getContext(), " cursor not working", Toast.LENGTH_SHORT).show();
         }
-        overViewText.setText(R.string.overview_string);
         mLinearLayout.setVisibility(View.VISIBLE);
     }
 
     @Override
     public Loader<Cursor> onCreateLoader(int id, Bundle args) {
-
-        Uri trailerWithID = MovieContract.VideoEntry.buildVideoByIDUri(mMovieId);
-        return new CursorLoader(getContext(), trailerWithID, null, null, null, null);
+        Uri loaderUri = null;
+        switch (id){
+            case VIDEO_TRAILER_LOADER:
+                loaderUri = MovieContract.VideoEntry.buildVideoByIDUri(mMovieId);
+                break;
+            case REVIEW_LOADER:
+                loaderUri = MovieContract.ReviewEntry.buildReviewByIDUri(mMovieId);
+                break;
+        }
+        return new CursorLoader(getContext(), loaderUri, null, null, null, null);
     }
 
     @Override
     public void onLoadFinished(Loader<Cursor> loader, Cursor cursor) {
-        trailerAdapter.swapCursor(cursor);
+        switch (loader.getId()){
+            case VIDEO_TRAILER_LOADER:
+                trailerAdapter.swapCursor(cursor);
+                break;
+            case REVIEW_LOADER:
+                mReviewCursorAdapter.swapCursor(cursor);
+                break;
+        }
+
     }
 
     @Override
     public void onLoaderReset(Loader<Cursor> loader) {
         trailerAdapter.swapCursor(null);
+        mReviewCursorAdapter.swapCursor(null);
     }
 
     public void updateVideoTrailer(String id) {
@@ -234,6 +342,34 @@ public class MovieDetailFragment extends Fragment implements LoaderManager.Loade
         });
     }
 
+    public void updateReviews(String id) {
+        TmdbApiInterface mTmdbApiService = TmdbApiClient.getClient().create(TmdbApiInterface.class);
+
+        Call<MovieReviewResponse> call = mTmdbApiService.getMovieReview(id, API_KEY);
+        call.enqueue(new Callback<MovieReviewResponse>() {
+            @Override
+            public void onResponse(Call<MovieReviewResponse> call, Response<MovieReviewResponse> response) {
+                try {
+                    int movieId = response.body().getId();
+                    mMovieReviews = response.body().getResults();
+                    loadReviewData((ArrayList<MovieReview>) mMovieReviews, movieId);
+
+                } catch (NullPointerException e) {
+                    Log.v(TAG, e.toString());
+                }
+            }
+
+            @Override
+            public void onFailure(Call<MovieReviewResponse> call, Throwable t) {
+                try{
+                    Toast.makeText(getActivity(), R.string.error_fetch_data, Toast.LENGTH_SHORT).show();
+                }catch (NullPointerException e){
+                    Log.v(TAG, e.toString());
+                }
+            }
+        });
+    }
+
     public void loadTrailerData(ArrayList<MovieVideo> trailerArrayList, int movieId) {
         ContentValues[] values = new ContentValues[trailerArrayList.size()];
 
@@ -248,9 +384,19 @@ public class MovieDetailFragment extends Fragment implements LoaderManager.Loade
         getContext().getContentResolver().bulkInsert(MovieContract.VideoEntry.CONTENT_URI, values);
     }
 
-    @OnClick(R.id.review_button)
-    public void reviewButtonOnClick() {
-        ReviewDialogFragment.newInstance(mMovieId).show(getFragmentManager(), REVIEW_DIALOG_TAG);
+    public void loadReviewData(ArrayList<MovieReview> movieReviews, int movieId) {
+        ContentValues[] values = new ContentValues[movieReviews.size()];
+
+        for (int i = 0; i < values.length; i++) {
+            ContentValues contentValues = new ContentValues();
+            contentValues.put(MovieContract.ReviewEntry.COLUMN_REVIEW_ID, movieReviews.get(i).getId());
+            contentValues.put(MovieContract.ReviewEntry.COLUMN_REVIEW_AUTHOR, movieReviews.get(i).getAuthor());
+            contentValues.put(MovieContract.ReviewEntry.COLUMN_REVIEW_CONTENT, movieReviews.get(i).getContent());
+            contentValues.put(MovieContract.ReviewEntry.COLUMN_REVIEW_FOREIGN_KEY, movieId);
+
+            values[i] = contentValues;
+        }
+        getContext().getContentResolver().bulkInsert(MovieContract.ReviewEntry.CONTENT_URI, values);
     }
 
     private void toggleFavouriteHandler(int flagValue) {
@@ -260,6 +406,7 @@ public class MovieDetailFragment extends Fragment implements LoaderManager.Loade
         String[] selectionArgs = new String[]{Integer.toString(mMovieId)};
         try {
             getActivity().getContentResolver().update(MovieContract.MovieEntry.CONTENT_URI, values, selection, selectionArgs);
+            Toast.makeText(getContext(), flagValue + " added to database!!!", Toast.LENGTH_SHORT).show();
         } catch (NullPointerException e) {
             Log.v(TAG, e.toString());
         }

@@ -4,13 +4,13 @@ import android.content.ActivityNotFoundException;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
-import android.support.v7.app.AppCompatActivity;
 
+import com.tituy.popularmovie.R;
 import com.tituy.popularmovie.adapter.MovieCursorAdapter;
 import com.tituy.popularmovie.adapter.TrailerAdapter;
-import com.tituy.popularmovie.R;
+import com.tituy.popularmovie.fragment.MovieDetailFragment;
 
-public class MainActivity extends AppCompatActivity implements MovieCursorAdapter.OnItemClickCallBack, TrailerAdapter.trailerClickHandler{
+public class MainActivity extends BaseActivity implements MovieCursorAdapter.OnItemClickCallBack, TrailerAdapter.trailerClickHandler{
 
     private static final String MOVIE_DETAIL_FRAGMENT_TAG = "MOVIE_DETAIL_TAG";
     private static final int REQUEST_CODE_INTENT = 1;
@@ -24,6 +24,9 @@ public class MainActivity extends AppCompatActivity implements MovieCursorAdapte
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        //getToolbar();
+        getToolbar(getResources().getString(R.string.app_name));
+        //getDrawerBuilder(this);
         if(findViewById(R.id.movie_detail_container) != null){
 
             //in Dual screens mode
